@@ -19,15 +19,20 @@
                 navigator.getUserMedia({ video: true }, _this.success, _this.failure);
             } else if (navigator.webkitGetUserMedia) {
                 navigator.webkitGetUserMedia({ video: true }, _this.success, _this.failure);
+            }
+            else if (navigator.mozGetUserMedia) {
+                navigator.mozGetUserMedia({ video: true }, _this.success, _this.failure);
+            }
+            else if (navigator.msGetUserMedia) {
+                navigator.msGetUserMedia({ video: true }, _this.success, _this.failure);
+            } else if ( navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true }, _this.success, _this.failure);
             } else {
                 _this.options.error('Your browser does not support getUserMedia');
             }
         };
 
         _this.success = function (stream) {
-            if (window.webkitURL) {
-                stream = window.webkitURL.createObjectURL(stream);
-            }
 
             $video = $('<video>');
             _this.video = $video.get(0);
@@ -35,13 +40,13 @@
             $video.on('play', _this.startedPlaying);
 
             _this.video.autoplay = true;
-            _this.video.src = stream;
+            _this.video.srcObject = stream;
 
             $video.appendTo(_this.element);
         };
 
         _this.failure = function () {
-            this.options.error('Permission for getUserMedia denied');
+            _this.options.error('Permission for getUserMedia denied');
         };
 
         _this.startedPlaying = function (e) {
